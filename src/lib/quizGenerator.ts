@@ -275,39 +275,3 @@ const getSampleQuestions = (genre: string): Question[] => {
   // Otherwise, generate generic questions
   return generateGenericQuestions(genre);
 };
-
-// Generate mock questions for any genre not in our predefined list
-const generateGenericQuestions = (genre: string): Question[] => {
-  return [
-    {
-      id: uuidv4(),
-      text: `What is considered the most significant advancement in ${genre}?`,
-      options: ["Option A", "Option B", "Option C", "Option D"],
-      correctAnswer: Math.floor(Math.random() * 4),
-    },
-    {
-      id: uuidv4(),
-      text: `Who is widely regarded as a pioneer in ${genre}?`,
-      options: ["Person 1", "Person 2", "Person 3", "Person 4"],
-      correctAnswer: Math.floor(Math.random() * 4),
-    },
-    {
-      id: uuidv4(),
-      text: `Which event had the biggest impact on ${genre}?`,
-      options: ["Event 1", "Event 2", "Event 3", "Event 4"],
-      correctAnswer: Math.floor(Math.random() * 4),
-    },
-    {
-      id: uuidv4(),
-      text: `What is a common misconception about ${genre}?`,
-      options: ["Misconception 1", "Misconception 2", "Misconception 3", "Misconception 4"],
-      correctAnswer: Math.floor(Math.random() * 4),
-    },
-    {
-      id: uuidv4(),
-      text: `Which country is most associated with advancements in ${genre}?`,
-      options: ["Country 1", "Country 2", "Country 3", "Country 4"],
-      correctAnswer: Math.floor(Math.random() * 4),
-    },
-  ];
-};
