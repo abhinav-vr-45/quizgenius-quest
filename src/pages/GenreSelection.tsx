@@ -34,6 +34,14 @@ const GenreSelection = () => {
     }
 
     try {
+      // Display a toast explaining API key requirement
+      toast({
+        title: "Gemini API Key Required",
+        description: "Replace 'GEMINI_API_KEY' in quizGenerator.ts with your actual Gemini API key.",
+        variant: "default",
+        duration: 5000,
+      });
+      
       await generateQuestions(inputGenre);
       navigate("/quiz");
     } catch (error) {

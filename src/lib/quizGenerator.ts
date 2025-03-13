@@ -178,9 +178,92 @@ const generateGenericQuestions = (genre: string): Question[] => {
 // This function simulates generating a quiz with AI 
 // In a real app, this would call your backend API which would then call Gemini
 export const generateQuiz = async (genre: string): Promise<Question[]> => {
-  // Simulate API call delay
-  await new Promise(resolve => setTimeout(resolve, 1500));
-  
+  try {
+    // Show loading state while generating questions
+    console.log(`Generating questions for genre: ${genre}`);
+    
+    // Prepare the prompt for Gemini API
+    const prompt = `Generate 5 multiple-choice quiz questions about ${genre}. 
+    Each question should have 4 options with exactly one correct answer.
+    Format the response as a valid JSON array with this structure:
+    [
+      {
+        "text": "Question text here",
+        "options": ["Option A", "Option B", "Option C", "Option D"],
+        "correctAnswer": 0 (index of correct option, 0-3)
+      }
+    ]
+    Make sure the questions are factually accurate and appropriately challenging.`;
+
+    // Call the Gemini API
+    const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=GEMINI_API_KEY", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [{
+          parts: [{ text: prompt }]
+        }]
+      })
+    });
+
+    // Check if the request was successful
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Gemini API error:', errorText);
+      throw new Error(`Failed to generate questions: ${response.status}`);
+    }
+
+    // Parse the response
+    const data = await response.json();
+    
+    // Extract the text from the response
+    const responseText = data.candidates?.[0].content?.parts?.[0]?.text;
+    
+    if (!responseText) {
+      console.error('No text in Gemini response', data);
+      throw new Error('Invalid response from Gemini API');
+    }
+
+    console.log('Gemini response received');
+    
+    // Find the JSON part of the response
+    const jsonMatch = responseText.match(/\[[\s\S]*\]/);
+    if (!jsonMatch) {
+      console.error('Could not extract JSON from response', responseText);
+      // Fall back to sample questions if we can't parse the response
+      return getSampleQuestions(genre);
+    }
+    
+    try {
+      // Parse the JSON part
+      const parsedQuestions = JSON.parse(jsonMatch[0]);
+      
+      // Validate and format the questions
+      const formattedQuestions = parsedQuestions.map((q: any) => ({
+        id: uuidv4(),
+        text: q.text,
+        options: q.options,
+        correctAnswer: q.correctAnswer
+      }));
+      
+      console.log(`Successfully generated ${formattedQuestions.length} questions`);
+      return formattedQuestions;
+    } catch (jsonError) {
+      console.error('Failed to parse JSON from response', jsonError);
+      // Fall back to sample questions if we can't parse the JSON
+      return getSampleQuestions(genre);
+    }
+  } catch (error) {
+    console.error('Error generating quiz questions:', error);
+    // Fall back to sample questions if there's an error
+    return getSampleQuestions(genre);
+  }
+};
+
+// Sample questions as fallback
+const getSampleQuestions = (genre: string): Question[] => {
   // Normalize the genre to lowercase for case-insensitive matching
   const normalizedGenre = genre.toLowerCase();
   
@@ -191,4 +274,40 @@ export const generateQuiz = async (genre: string): Promise<Question[]> => {
   
   // Otherwise, generate generic questions
   return generateGenericQuestions(genre);
+};
+
+// Generate mock questions for any genre not in our predefined list
+const generateGenericQuestions = (genre: string): Question[] => {
+  return [
+    {
+      id: uuidv4(),
+      text: `What is considered the most significant advancement in ${genre}?`,
+      options: ["Option A", "Option B", "Option C", "Option D"],
+      correctAnswer: Math.floor(Math.random() * 4),
+    },
+    {
+      id: uuidv4(),
+      text: `Who is widely regarded as a pioneer in ${genre}?`,
+      options: ["Person 1", "Person 2", "Person 3", "Person 4"],
+      correctAnswer: Math.floor(Math.random() * 4),
+    },
+    {
+      id: uuidv4(),
+      text: `Which event had the biggest impact on ${genre}?`,
+      options: ["Event 1", "Event 2", "Event 3", "Event 4"],
+      correctAnswer: Math.floor(Math.random() * 4),
+    },
+    {
+      id: uuidv4(),
+      text: `What is a common misconception about ${genre}?`,
+      options: ["Misconception 1", "Misconception 2", "Misconception 3", "Misconception 4"],
+      correctAnswer: Math.floor(Math.random() * 4),
+    },
+    {
+      id: uuidv4(),
+      text: `Which country is most associated with advancements in ${genre}?`,
+      options: ["Country 1", "Country 2", "Country 3", "Country 4"],
+      correctAnswer: Math.floor(Math.random() * 4),
+    },
+  ];
 };
