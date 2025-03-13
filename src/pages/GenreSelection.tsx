@@ -3,11 +3,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "@/components/Button";
 import { useQuiz } from "@/context/QuizContext";
-import { ArrowLeft, Brain, Dices, Flask, History, TerminalSquare, Sparkles } from "lucide-react";
+import { ArrowLeft, Brain, Dices, FlaskConical, History, TerminalSquare, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const popularGenres = [
-  { name: "Science", icon: <Flask className="h-5 w-5" /> },
+  { name: "Science", icon: <FlaskConical className="h-5 w-5" /> },
   { name: "History", icon: <History className="h-5 w-5" /> },
   { name: "Technology", icon: <TerminalSquare className="h-5 w-5" /> },
   { name: "Random", icon: <Dices className="h-5 w-5" /> },
