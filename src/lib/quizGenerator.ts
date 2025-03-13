@@ -1,3 +1,4 @@
+
 import { Question } from "@/components/QuizCard";
 import { v4 as uuidv4 } from "uuid";
 
@@ -175,8 +176,7 @@ const generateGenericQuestions = (genre: string): Question[] => {
   ];
 };
 
-// This function simulates generating a quiz with AI 
-// In a real app, this would call your backend API which would then call Gemini
+// This function generates a quiz with Gemini API
 export const generateQuiz = async (genre: string): Promise<Question[]> => {
   try {
     // Show loading state while generating questions
@@ -195,8 +195,8 @@ export const generateQuiz = async (genre: string): Promise<Question[]> => {
     ]
     Make sure the questions are factually accurate and appropriately challenging.`;
 
-    // Call the Gemini API
-    const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=GEMINI_API_KEY", {
+    // Call the Gemini API with the provided API key
+    const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyDJFqEEMSITrZAFOTC0z682cGlLr02oY50", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -219,7 +219,7 @@ export const generateQuiz = async (genre: string): Promise<Question[]> => {
     const data = await response.json();
     
     // Extract the text from the response
-    const responseText = data.candidates?.[0].content?.parts?.[0]?.text;
+    const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
     
     if (!responseText) {
       console.error('No text in Gemini response', data);
