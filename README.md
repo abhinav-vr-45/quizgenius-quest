@@ -24,7 +24,7 @@ Follow these steps:
 
 ```sh
 # Step 1: Clone the repository using the project's Git URL.
-git clone <[YOUR_GIT_URL](https://github.com/abhinav-vr-45/quizgenius-quest)>
+git clone <https://github.com/abhinav-vr-45/quizgenius-quest>
 
 # Step 2: Navigate to the project directory.
 cd <quizgenius-quest>
